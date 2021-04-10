@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 pd.set_option('display.max_columns', None)
@@ -46,13 +46,28 @@ def ingest_data(date):
     print("Begin Sort")
     intPd.sort_values(by=['streams'], ascending=False, kind='mergesort', inplace=True)
     print("End Sort")
-    intPd[:10000].to_csv("files/results.csv", index=False, sep=";")
+    intPd[:10000].to_csv("files/results.csv", index=False, sep="\t")
     return date
 
 
 @app.route('/tracks')
 def tracks_list():
-    pass
+    """
+
+    :return: list of the tracks sorted by streams
+    """
+
+    return request.args
+    reports_columns = ['date', 'isrc', 'title', 'artists', 'streams']
+    dtype = {'date': str, 'isrc': str, 'title': str, 'artists': str}
+    tracks_list = []
+    for index in range(10, 15):
+        filename_relativePath = "./ingests/2020-11-{}".format(index)
+        with pd.read_csv(filename_relativePath, encoding="utf-8", delimiter="\t",
+                         usecols=reports_columns, chunksize=1000000, dtype=dtype) as reader:
+            tracks_list.append(pd.concat([chunk for chunk in reader]))
+            reader.close()
+    tracks_list = pd.concat(tracks_list)  # convert to DataFrame
 
 
 if __name__ == "__main__":
