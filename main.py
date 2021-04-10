@@ -1,6 +1,7 @@
 import pandas as pd
 from flask import Flask, request
 import numpy as np
+import os
 
 app = Flask(__name__)
 pd.set_option('display.max_columns', None)
@@ -9,6 +10,11 @@ pd.set_option('display.max_columns', None)
 @app.route('/')
 def login():
     return "Hello World"
+
+
+# set name and the data type of the columns of the report file
+reports_columns = ['date', 'isrc', 'title', 'artists', 'streams']
+dtypes = {'date': str, 'isrc': str, 'title': str, 'artists': str, 'streams': np.int64}
 
 
 @app.route('/report/<date>')
@@ -32,15 +38,11 @@ def ingest_data(date):
 
     print("isrcs loaded")
 
-    # set name and the data type of the columns of the report file
-    reports_columns = ['date', 'isrc', 'title', 'artists', 'streams']
-    dtypes = {'date': str, 'isrc': str, 'title': str, 'artists': str, 'streams': np.int64}
-
     # read the report's file, extract all the lines and put in a panda DataFrame
     # chunksize is to speed up
     # python engine correct some errors : mostly parsing Errors
     with pd.read_csv(report_filename_relativePath, encoding="utf-8", delimiter="\\t", header=0,
-                     chunksize=1000000, dtype=dtypes, names=reports_columns, engine='python') as reader:
+                     chunksize=1000000, dtype=dtypes, engine='python') as reader:
         reports_frame = pd.concat([chunk for chunk in reader])
         reader.close()
 
@@ -66,7 +68,7 @@ def ingest_data(date):
     # concatenate the two DataFrames : summedDataFrame & otherColumns
     # rearrange the DataFrame : date, isrc, title, artists, streams(total streams)
     fullDataFrame = pd.concat([otherColumns, summedDataFrame], 1).reset_index()
-    fullDataFrame[['isrc', 'date']] = fullDataFrame[['date', 'isrc']]
+    fullDataFrame = fullDataFrame.reindex(columns=reports_columns)
 
     print("concatenate Performed")
 
@@ -79,7 +81,7 @@ def ingest_data(date):
     print("End Sort")
 
     # retrieve the Top 10k and store in the ingest folder under the name : top10k_2020-11-{date}.csv
-    fullDataFrame[:10000].to_csv(result_filename_relativePath, index=False, sep="\t")
+    fullDataFrame[:10000].to_csv(result_filename_relativePath, index=False, sep=";")
 
     return date
 
@@ -88,20 +90,28 @@ def ingest_data(date):
 def tracks_list():
     """
 
-    :return: list of the tracks sorted by streams
+    :return: list of the tracks sorted by date and/or streams
     """
-
-    return request.args
-    reports_columns = ['date', 'isrc', 'title', 'artists', 'streams']
-    dtype = {'date': str, 'isrc': str, 'title': str, 'artists': str}
+    date = request.args.get('date', None)
+    isrc = request.args.get('isrc', None)
     tracks_list = []
     for index in range(10, 15):
-        filename_relativePath = "./ingests/2020-11-{}".format(index)
-        with pd.read_csv(filename_relativePath, encoding="utf-8", delimiter="\t",
-                         usecols=reports_columns, chunksize=1000000, dtype=dtype) as reader:
-            tracks_list.append(pd.concat([chunk for chunk in reader]))
-            reader.close()
+        filename_relativePath = "ingests/top10k_2020-11-{}.csv".format(index)
+        if os.path.exists(filename_relativePath):
+            with pd.read_csv(filename_relativePath, encoding="utf-8", delimiter=";",
+                             usecols=reports_columns, chunksize=1000000, dtype=dtypes, engine='python') as reader:
+                tracks_list.append(pd.concat([chunk for chunk in reader]))
+                reader.close()
+    if tracks_list == []:
+        return "Nothing ingested yet"
     tracks_list = pd.concat(tracks_list)  # convert to DataFrame
+    if date is not None:
+        formattedDate = "2020-11-{}".format(date)
+        tracks_list = tracks_list[tracks_list.date == formattedDate]
+    if isrc is not None:
+        tracks_list = tracks_list[tracks_list.isrc == isrc]
+    print(tracks_list)
+    return "Done"
 
 
 if __name__ == "__main__":
