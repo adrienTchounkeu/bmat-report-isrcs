@@ -24,6 +24,9 @@ def ingest_data(date):
     :param date:
     :return: download and store data of the usages of Top 10k ISRC that are on the isrcs file sorted by number of streams
     """
+    # assume date in [10, 11, 12, 13, 14]
+    if date not in [10, 11, 12, 13, 14]:
+        return "No information for the provided date"
 
     # create variables for filenames
     report_filename_relativePath = "files/report_2020-11-{}.csv.gz".format(date)
@@ -111,6 +114,8 @@ def tracks_list():
     if isrc is not None:
         tracks_list = tracks_list[tracks_list.isrc == isrc]
     print(tracks_list)
+    if tracks_list.empty:
+        return "No results for the provided filters"
     return "Done"
 
 
