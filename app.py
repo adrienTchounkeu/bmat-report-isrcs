@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import numpy as np
 import os
 
@@ -9,7 +9,7 @@ pd.set_option('display.max_columns', None)
 
 @app.route('/')
 def login():
-    return "Hello World"
+    return "Welcome to BMAT-REPORT-ISRCS"
 
 
 # set name and the data type of the columns of the report file
@@ -17,7 +17,7 @@ reports_columns = ['date', 'isrc', 'title', 'artists', 'streams']
 dtypes = {'date': str, 'isrc': str, 'title': str, 'artists': str, 'streams': np.int64}
 
 
-@app.route('/report/<date>')
+@app.route('/report/<int:date>')
 def ingest_data(date):
     """
 
@@ -32,6 +32,10 @@ def ingest_data(date):
     report_filename_relativePath = "files/report_2020-11-{}.csv.gz".format(date)
     isrcs_filename_relativePath = "files/isrcs_2020-11-{}.csv.gz".format(date)
     result_filename_relativePath = "ingests/top10k_2020-11-{}.csv".format(date)
+
+    # verify if the report has already been imported
+    if os.path.exists(result_filename_relativePath):
+        return "Reports already imported"
 
     # read the isrcs' csv file, extract all the lines and shape in a panda DataFrame
     # chunksize is to speed up
@@ -84,39 +88,50 @@ def ingest_data(date):
     print("End Sort")
 
     # retrieve the Top 10k and store in the ingest folder under the name : top10k_2020-11-{date}.csv
-    fullDataFrame[:10000].to_csv(result_filename_relativePath, index=False, sep=";")
+    top10kDataFrame = fullDataFrame[:10000]
+    top10kDataFrame.to_csv(result_filename_relativePath, index=False, sep=";")
 
-    return date
+    return top10kDataFrame.to_dict('list')
 
 
 @app.route('/tracks')
 def tracks_list():
     """
 
-    :return: list of the tracks sorted by date and/or streams
+    :return: list of the tracks sorted by date and/or isrc
     """
+
+    # get the arguments date and isrc
     date = request.args.get('date', None)
     isrc = request.args.get('isrc', None)
+
+    # retrieve all ingested data
     tracks_list = []
     for index in range(10, 15):
+
+        # verify the existence of the file before reading
         filename_relativePath = "ingests/top10k_2020-11-{}.csv".format(index)
         if os.path.exists(filename_relativePath):
             with pd.read_csv(filename_relativePath, encoding="utf-8", delimiter=";",
                              usecols=reports_columns, chunksize=1000000, dtype=dtypes, engine='python') as reader:
                 tracks_list.append(pd.concat([chunk for chunk in reader]))
                 reader.close()
+
+    # no ingested data
     if tracks_list == []:
         return "Nothing ingested yet"
+
+    # apply filters
     tracks_list = pd.concat(tracks_list)  # convert to DataFrame
     if date is not None:
         formattedDate = "2020-11-{}".format(date)
         tracks_list = tracks_list[tracks_list.date == formattedDate]
     if isrc is not None:
         tracks_list = tracks_list[tracks_list.isrc == isrc]
-    print(tracks_list)
+
     if tracks_list.empty:
         return "No results for the provided filters"
-    return "Done"
+    return tracks_list.to_dict('list')
 
 
 if __name__ == "__main__":
