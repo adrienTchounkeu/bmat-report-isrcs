@@ -26,34 +26,40 @@ def ingest_data(date):
     """
     # assume date in [10, 11, 12, 13, 14]
     if date not in [10, 11, 12, 13, 14]:
-        return "No information for the provided date"
+        return dict(status=200, text="No information for the provided date")
 
     # create variables for filenames
-    report_filename_relativePath = "files/report_2020-11-{}.csv.gz".format(date)
-    isrcs_filename_relativePath = "files/isrcs_2020-11-{}.csv.gz".format(date)
+    report_filename_relativePath = "https://s3.amazonaws.com/bmat.charts.test/report_2020-11-{}.csv.gz".format(date)
+    isrcs_filename_relativePath = "https://s3.amazonaws.com/bmat.charts.test/isrcs_2020-11-{}.csv.gz".format(date)
     result_filename_relativePath = "ingests/top10k_2020-11-{}.csv".format(date)
 
     # verify if the report has already been imported
     if os.path.exists(result_filename_relativePath):
-        return "Reports already imported"
+        return dict(status=200, text="Reports already imported")
 
     # read the isrcs' csv file, extract all the lines and shape in a panda DataFrame
     # chunksize is to speed up
+
+    print("------------- Downloading and Reading the ISRC file --------------")
+
     with pd.read_csv(isrcs_filename_relativePath, encoding="utf-8", chunksize=1000000) as reader:
         list_isrcDF = pd.concat([chunk for chunk in reader])
         reader.close()
 
-    print("isrcs loaded")
+    print("isrcs loaded \n")
 
     # read the report's file, extract all the lines and put in a panda DataFrame
     # chunksize is to speed up
     # python engine correct some errors : mostly parsing Errors
+
+    print("------------- Downloading and Reading the report file --------------")
+
     with pd.read_csv(report_filename_relativePath, encoding="utf-8", delimiter="\\t", header=0,
                      chunksize=1000000, dtype=dtypes, engine='python') as reader:
         reports_frame = pd.concat([chunk for chunk in reader])
         reader.close()
 
-    print("reports loaded")
+    print("reports loaded\n")
 
     # inner join the two DataFrames -> filter the report's DataFrame to keep ISRCs that are in the ircs' file
     # the result DataFrame contains lines with same ircs -> group by isrc and prevent the default sort
@@ -67,7 +73,7 @@ def ingest_data(date):
 
     summedDataFrame = merged_groupedDataFrame.sum()
 
-    print("Sum performed")
+    print("Sum performed \n")
 
     # re-adding the other columns
     otherColumns = merged_groupedDataFrame[['date', 'artists', 'title']].first()
@@ -119,7 +125,7 @@ def tracks_list():
 
     # no ingested data
     if tracks_list == []:
-        return "Nothing ingested yet"
+        return dict(status=200, text="Nothing ingested yet. Try to ingest some data")
 
     # apply filters
     tracks_list = pd.concat(tracks_list)  # convert to DataFrame
@@ -130,7 +136,7 @@ def tracks_list():
         tracks_list = tracks_list[tracks_list.isrc == isrc]
 
     if tracks_list.empty:
-        return "No results for the provided filters"
+        return dict(status=200, text="No results for the provided filters")
     return tracks_list.to_dict('list')
 
 
