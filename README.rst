@@ -28,7 +28,7 @@ Installation
 
 To run my solution, you must have ``python`` and ``pip`` installed in your system. 
 
-Clone the project from GitHub
+Download the project from GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To clone my code, you run the command below in the CLI
@@ -122,23 +122,35 @@ Tests
 
 
 
-
-
-
-
-
-
 Further perspectives
 ---------------------
 
+Limitations & Optimizations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Even though my code is solving the problem, i have some performance and resources used issues. 
+To optimize my solution, i think
+
+* implement parallelization : optimization of read CSV files
+* resizing DataFrames before huge memory cost computations
+* manually freeing up the memory of unused ongoing DataFrames
 
 
-Conclusion
------------
+Real life Adaptation
+~~~~~~~~~~~~~~~~~~~~
 
+Assuming that we have files coming from more than one country, streams count
+of more than one DSP, we will have major problems:
 
+* storing ingested data
+* searching on huge amounts of data
+* computing on huge amounts of data
 
+To solve this problem, we need to use a near real time search engine tool : *ElasticSearch* |ElasticSearch-Version|, 
+for instance. I would then store in *ElasticSearch*, query and retrieve relevant information. 
 
+After installing ElasticSearch on my computer, my API will easily communicate with *ElasticSearch*
+through an *ElasticSearch Client* written in Python. My REST API will just perform store, query and retrieve functions
 
 
 
@@ -149,3 +161,4 @@ Conclusion
 .. |Flask-Version| image:: https://img.shields.io/pypi/v/flask?label=flask&logo=flask&logoColor=white   :alt: flask Version
 .. |Numpy-Version| image:: https://img.shields.io/pypi/v/numpy?label=numpy&logo=numpy&logoColor=white   :alt: numpy Version
 .. |Pandas-Version| image:: https://img.shields.io/pypi/v/pandas?label=pandas&logo=pandas&logoColor=white   :alt: pandas Version
+.. |ElasticSearch-Version| image:: https://img.shields.io/badge/elasticsearch-3.12-blue   :alt: elastic Search
