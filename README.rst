@@ -161,7 +161,7 @@ To solve this problem, we need to use a near real-time search engine tool : *Ela
 for instance. I would then store ingested data in *ElasticSearch*, query and retrieve relevant information. 
 
 After installing ElasticSearch on my computer, my API will easily communicate with *ElasticSearch*
-through an *ElasticSearch Client* written in Python. My REST API will just perform storing, querying and retrieving functions
+through an *ElasticSearch Client* written in Python. My REST API will just perform storing, querying and retrieving functions.
 
 
 
