@@ -19,7 +19,7 @@ To resolve this problem, we have used ``python``, ``flask``, ``pandas`` , and ``
 
 * ``python``: among the best programming language used for data analysis purposes.
 * ``flask``: we are supposed to build a small REST API. Even though *Django* is a great python web framework, *flask* has been built for rapid development, provides API support, and has a lightweight codebase. Thereby, it best fits with the solution.
-* ``pandas``: input CSV files contain millions of lines. *Pandas* is among the best modules used for data analysis.
+* ``pandas``: input CSV files contain millions of lines. *Pandas* is among the best modules used for data analysis along with DataFrames.
 * ``numpy``: works along with *pandas*.
 
 
@@ -85,7 +85,7 @@ to solve the problem. This step is one of the most important steps. We can also 
 
 * With data types, isrc files contain 01 column ``{isrc : string}`` whereas report files contain 05 columns ``[{date:string},{isrc:string},{title:string},{artists:string},{streams:long}]``
 
-* Beware of duplicate isrc values for two different lines. 
+* Beware of duplicate isrc values in report files. 
 
 
 Solving ``bmat-report-isrcs``
@@ -97,8 +97,8 @@ Assumptions
 To solve the problem, we did some hypothesis:
 
 * data are well-formatted in the files
-* user can only enter dates in [10, 11, 12, 13, 14]
-* number of plays of each isrc in the isrc file is the sum of all the streams of tracks with the same isrc (in case, it appears in multiple lines of report files)
+* user can only enter days in [10, 11, 12, 13, 14]
+* number of plays of each isrc is the sum of all the streams of tracks with the same isrc (in case, it appears in multiple lines of report files)
 * the first endpoint ``/report/<date>`` ingests the Top10k ISRCs in a file ``top10k_2020-11-{date}.csv`` contained in the folder named ``ingests`` 
 * the second point ``/tracks`` lists all the tracks of **ingested data**. To filter by date and/or isrc, just call the endpoint with arguments ``/tracks?date={target_date}&isrc={target_isrc}``
 
@@ -147,12 +147,10 @@ of more than one DSP, we will have major problems:
 * computing on huge amounts of data
 
 To solve this problem, we need to use a near real-time search engine tool : *ElasticSearch* |ElasticSearch-Version|, 
-for instance. I would then store in *ElasticSearch*, query and retrieve relevant information. 
+for instance. I would then store ingested data in *ElasticSearch*, query and retrieve relevant information. 
 
 After installing ElasticSearch on my computer, my API will easily communicate with *ElasticSearch*
-through an *ElasticSearch Client* written in Python. My REST API will just perform store, query and retrieve functions
-
-
+through an *ElasticSearch Client* written in Python. My REST API will just perform storing, querying and retrieving functions
 
 
 
