@@ -124,7 +124,7 @@ Below are the results when calling my endpoints: ``/report/<date>`` and ``/track
 * To test the first endpoint, you send a get request to the server ``127.0.0.1:5000/report/10``. You can track the process on the server command line. In the end, a file entitled ``ingests/top10k_2020-11-10.csv`` will be created under the folder **ingests** and the server will return all the information
 * To test the second endpoint, you send a get request to the server ``127.0.0.1:5000/tracks``. The server will return all the information
 
-NB:*You must have a high quality internet connexion to speed up the download files step*
+NB: *You must have a high quality internet connexion to speed up the download files step*
 
 Tests
 ~~~~~
