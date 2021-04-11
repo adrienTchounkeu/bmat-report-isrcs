@@ -3,8 +3,8 @@ bmat-report-isrcs
 
 |Python-Versions| |pip-Verion| |Flask-Version| |Pandas-Version| |Numpy-Version|
 
-``bmat-report-isrc`` is a Data Analysis REST API which consists of reading multiple CSV files that have to be 
-analyzed, cleaned and computed to bring out the Top 10k ISRCs.
+``bmat-report-isrc`` is a Data Analysis REST API that consists of reading multiple CSV files which have to be 
+analyzed, cleaned, and computed to bring out the Top 10k ISRCs.
 
 --------------------------------------
 
@@ -17,9 +17,9 @@ Technologies used and Why ?
 
 To resolve this problem, we have used ``python``, ``flask``, ``pandas`` , and ``numpy``.
 
-* ``python``: among the most-widely programming language used for data analysis purposes
-* ``flask``: we are supposed to build a small REST API. Even though *Django* is a great python web-framework, *flask* has been built for rapid development, provides support for API and has a lightweight codebase. Thereby, it best fits with the solution.
-* ``pandas``: input CSV files contain millions of lines. *Pandas* is among the most-widely modules used for data analysis.
+* ``python``: among the best programming language used for data analysis purposes.
+* ``flask``: we are supposed to build a small REST API. Even though *Django* is a great python web framework, *flask* has been built for rapid development, provides API support, and has a lightweight codebase. Thereby, it best fits with the solution.
+* ``pandas``: input CSV files contain millions of lines. *Pandas* is among the best modules used for data analysis.
 * ``numpy``: works along with *pandas*.
 
 
@@ -37,7 +37,7 @@ To clone my code, you run the command below in the CLI
 
     git clone "https://github.com/adrienTchounkeu/bmat-report-isrcs.git"
 
-You can also download the project by clinking the link `bmat-report-isrcs <https://github.com/adrienTchounkeu/bmat-report-isrcs.git>`_
+You can also download the project by clicking the link `bmat-report-isrcs <https://github.com/adrienTchounkeu/bmat-report-isrcs.git>`_
 
 
 Install Dependencies
@@ -56,13 +56,13 @@ All the project dependencies installed, run the command
 
 .. code:: sh
 
-   python app.py # on windows
+   python app.py # on Windows
 
 or 
 
 .. code:: sh
 
-   python3 app.py # on linux
+   python3 app.py # on Linux
 
 You can also run using the flask command 
 
@@ -77,9 +77,9 @@ Analyzing Data
 --------------
 
 While diving into the solution of this problem, we must, first of all, download the CSV files; Then, 
-observe and come out with all relevant information, and finally, use those information 
+observe and come out with all relevant information, and finally, use that information 
 to solve the problem. This step is one of the most important steps. We can also call it the
-*Understanding Data* step. ALL the information gather from the files : 
+*Understanding Data* step. ALL the information gathered from the files : 
 
 * files contain several millions of lines
 
@@ -96,7 +96,7 @@ Assumptions
 
 To solve the problem, we did some hypothesis:
 
-* data are well formatted in the files
+* data are well-formatted in the files
 * user can only enter dates in [10, 11, 12, 13, 14]
 * number of plays of each isrc in the isrc file is the sum of all the streams of tracks with the same isrc (in case, it appears in multiple lines of report files)
 * the first endpoint ``/report/<date>`` ingests the Top10k ISRCs in a file ``top10k_2020-11-{date}.csv`` contained in the folder named ``ingests`` 
@@ -128,15 +128,15 @@ Further perspectives
 Limitations & Optimizations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Even though my code is solving the problem, i have some performance and resources used issues. 
-To optimize my solution, i think
+Even though my code is solving the problem, I have some performance and resources used issues. 
+To optimize my solution, I think
 
 * implement parallelization : optimization of read CSV files
 * resizing DataFrames before huge memory cost computations
 * manually freeing up the memory of unused ongoing DataFrames
 
 
-Real life Adaptation
+Real-life Adaptation
 ~~~~~~~~~~~~~~~~~~~~
 
 Assuming that we have files coming from more than one country, streams count
@@ -146,7 +146,7 @@ of more than one DSP, we will have major problems:
 * searching on huge amounts of data
 * computing on huge amounts of data
 
-To solve this problem, we need to use a near real time search engine tool : *ElasticSearch* |ElasticSearch-Version|, 
+To solve this problem, we need to use a near real-time search engine tool : *ElasticSearch* |ElasticSearch-Version|, 
 for instance. I would then store in *ElasticSearch*, query and retrieve relevant information. 
 
 After installing ElasticSearch on my computer, my API will easily communicate with *ElasticSearch*
