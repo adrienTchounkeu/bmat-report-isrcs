@@ -41,7 +41,7 @@ You can also download the project by clinking the link `bmat-report-isrcs <https
 
 
 Install Dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 After downloading the code, Open the CLI in the root directory and execute the command :
 
@@ -90,6 +90,39 @@ to solve the problem. This step is one of the most important steps. We can also 
 
 Solving ``bmat-report-isrcs``
 -----------------------------
+
+Assumptions
+~~~~~~~~~~~
+
+To solve the problem, we did some hypothesis:
+
+* data are well formatted in the files
+* user can only enter dates in [10, 11, 12, 13, 14]
+* number of plays of each isrc in the isrc file is the sum of all the streams of tracks with the same isrc (in case, it appears in multiple lines of report files)
+* the first endpoint ``/report/<date>`` ingests the Top10k ISRCs in a file ``top10k_2020-11-{date}.csv`` contained in the folder named ``ingests`` 
+* the second point ``/tracks`` lists all the tracks of **ingested data**. To filter by date and/or isrc, just call the endpoint with arguments ``/tracks?date={target_date}&isrc={target_isrc}``
+
+Solution
+~~~~~~~~~~~
+
+To solve the problem, we use ``DataFrames`` and ``pandas as pd`` functions
+
+* read in large CSV files with ``pd.read_csv`` in chunks(1000000)
+* merge DataFrames with ``pd.merge``
+* groupBy DataFrame with ``DataFrame.groupby`` returns *DataFrameGroupBy* object
+* sum DataFrameGroupBy object with ``DataFrameGroupBy.sum``
+* concat dataFrames with ``pd.concat``
+* sort values with ``DataFrame.sort_values``
+* write in CSV file with ``DataFrame.to_csv``
+
+Tests
+~~~~~
+
+*No tests* have been done to test the endpoints
+
+
+
+
 
 
 
