@@ -115,10 +115,21 @@ To solve the problem, we use ``DataFrames`` and ``pandas as pd`` functions
 * sort values with ``DataFrame.sort_values``
 * write in CSV file with ``DataFrame.to_csv``
 
+Use Case
+~~~~~~~~
+
+Below are the results when calling my endpoints: ``/report/<date>`` and ``/tracks``
+
+* After running the server with the command ``python app.py``, the server will be available under the port *5000*. Thereby, ``127.0.0.1:5000``
+* To test the first endpoint, you send a get request to the server ``127.0.0.1:5000/report/10``. You can track the process on the server command line. In the end, a file entitled ``ingests/top10k_2020-11-10.csv`` will be created under the folder **ingests** and the server will return all the information
+* To test the second endpoint, you send a get request to the server ``127.0.0.1:5000/tracks``. The server will return all the information
+
+NB:*You must have a high quality internet connexion to speed up the download files step*
+
 Tests
 ~~~~~
 
-*No tests* have been done to test the endpoints
+*No unit tests* have been done to test the endpoints
 
 
 
