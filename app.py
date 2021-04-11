@@ -59,13 +59,13 @@ def ingest_data(date):
         reports_frame = pd.concat([chunk for chunk in reader])
         reader.close()
 
-    print("reports loaded\n")
+    print("reports loaded\n ---- Merging and Grouping Data ----")
 
     # inner join the two DataFrames -> filter the report's DataFrame to keep ISRCs that are in the ircs' file
     # the result DataFrame contains lines with same ircs -> group by isrc and prevent the default sort
     merged_groupedDataFrame = pd.merge(list_isrcDF, reports_frame, how="inner", on="isrc").groupby(["isrc"], sort=False)
 
-    print("Merge & GroupBy performed")
+    print("Merge & GroupBy performed\n ")
 
     # sum the streams of each group of the merged_groupedDataFrame, removing the other columns
 
@@ -73,7 +73,7 @@ def ingest_data(date):
 
     summedDataFrame = merged_groupedDataFrame.sum()
 
-    print("Sum performed \n")
+    print("Sum performed \n ---- Rearranging Data ----")
 
     # re-adding the other columns
     otherColumns = merged_groupedDataFrame[['date', 'artists', 'title']].first()
