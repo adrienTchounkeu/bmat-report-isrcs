@@ -17,10 +17,10 @@ Technologies used and Why ?
 
 To resolve this problem, we have used ``python``, ``flask``, ``pandas`` , and ``numpy``.
 
-* ``python`` : among the most-widely programming language used for data analysis purposes
-* ``flask`` : we are supposed to build a small REST API. Even though *Django* is a great python web-framework, *flask* has been built for rapid development, provides support for API and has a lightweight codebase. Thereby, it best fits with the solution.
-* ``pandas`` : input CSV files contain millions of lines. *Pandas* is among the most-widely modules used for data analysis.
-* ``numpy`` : works along with *pandas*.
+* ``python``: among the most-widely programming language used for data analysis purposes
+* ``flask``: we are supposed to build a small REST API. Even though *Django* is a great python web-framework, *flask* has been built for rapid development, provides support for API and has a lightweight codebase. Thereby, it best fits with the solution.
+* ``pandas``: input CSV files contain millions of lines. *Pandas* is among the most-widely modules used for data analysis.
+* ``numpy``: works along with *pandas*.
 
 
 Installation
@@ -43,16 +43,55 @@ You can also download the project by clinking the link `bmat-report-isrcs <https
 Install Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After downloading the code, Open the CLI in the root directory
+After downloading the code, Open the CLI in the root directory and execute the command :
+
+.. code:: sh
+
+   pip install -r requirements.txt
+
+
+NB: *"requirements.txt is a file which contains all the project dependencies"*
+
+All the project dependencies installed, run the command
+
+.. code:: sh
+
+   python app.py # on windows
+
+or 
+
+.. code:: sh
+
+   python3 app.py # on linux
+
+You can also run using the flask command 
+
+.. code:: sh
+
+   flask run
+
+NB: *The first method is preferred*
     
     
 Analyzing Data
 --------------
 
+While diving into the solution of this problem, we must, first of all, download the CSV files; Then, 
+observe and come out with all relevant information, and finally, use those information 
+to solve the problem. This step is one of the most important steps. We can also call it the
+*Understanding Data* step. ALL the information gather from the files : 
+
+* files contain several millions of lines
+
+* With data types, isrc files contain 01 column ``{isrc : string}`` whereas report files contain 05 columns ``[{date:string},{isrc:string},{title:string},{artists:string},{streams:long}]``
+
+* Beware of duplicate isrc values for two different lines. 
 
 
 Solving ``bmat-report-isrcs``
 -----------------------------
+
+
 
 
 
